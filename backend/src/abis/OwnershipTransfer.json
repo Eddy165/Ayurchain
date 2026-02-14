@@ -1,0 +1,7 @@
+[
+  "function initializeOwner(bytes32 batchId, address owner) external",
+  "function logTransfer(bytes32 batchId, address to, string calldata metadataURI) external",
+  "function getTransfers(bytes32 batchId) external view returns (tuple(bytes32 batchId, address from, address to, string metadataURI, uint256 timestamp)[] memory)",
+  "function currentOwner(bytes32) external view returns (address)",
+  "event TransferLogged(bytes32 indexed batchId, address indexed from, address indexed to, string metadataURI, uint256 timestamp)"
+]

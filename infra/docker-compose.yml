@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: ayurchain-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: ayurchain
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - ayurchain-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: ayurchain-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ayurchain-network
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: ayurchain-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      MONGO_URI: mongodb://mongodb:27017/ayurchain
+      REDIS_URL: redis://redis:6379
+      CORS_ORIGIN: http://localhost:3000
+    env_file:
+      - ../backend/.env
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - ayurchain-network
+
+  web:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    container_name: ayurchain-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_URL: http://localhost:3001/api
+    depends_on:
+      - backend
+    networks:
+      - ayurchain-network
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  ayurchain-network:
+    driver: bridge

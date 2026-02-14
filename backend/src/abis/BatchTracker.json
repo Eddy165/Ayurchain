@@ -1,0 +1,9 @@
+[
+  "function createBatch(bytes32 batchId, address farmer, string calldata metadataURI) external",
+  "function addProcessingEvent(bytes32 batchId, string calldata metadataURI) external",
+  "function addLabReport(bytes32 batchId, string calldata reportHash, string calldata status) external",
+  "function batches(bytes32) external view returns (bytes32 batchId, address farmer, string memory metadataURI, bool exists)",
+  "event BatchCreated(bytes32 indexed batchId, address indexed farmer, string metadataURI)",
+  "event ProcessingEventAdded(bytes32 indexed batchId, string metadataURI)",
+  "event LabReportAdded(bytes32 indexed batchId, string reportHash, string status)"
+]

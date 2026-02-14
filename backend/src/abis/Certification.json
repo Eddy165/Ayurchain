@@ -1,0 +1,7 @@
+[
+  "function addCertificate(bytes32 batchId, string calldata certHash, string calldata certType, uint256 validUntil) external",
+  "function revokeCertificate(bytes32 batchId, uint256 index, string calldata reasonHash) external",
+  "function getCertificates(bytes32 batchId) external view returns (tuple(bytes32 batchId, string certHash, string certType, uint256 validUntil, bool revoked, string revokeReasonHash)[] memory)",
+  "event CertificateAdded(bytes32 indexed batchId, string certHash, string certType, uint256 validUntil)",
+  "event CertificateRevoked(bytes32 indexed batchId, uint256 index, string reasonHash)"
+]

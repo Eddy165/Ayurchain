@@ -1,0 +1,7 @@
+[
+  "function registerFarmer(string calldata metadataURI) external",
+  "function updateKYC(address farmer, uint8 status) external",
+  "function getFarmer(address farmer) external view returns (tuple(address wallet, string metadataURI, uint8 kycStatus))",
+  "event FarmerRegistered(address indexed farmer, string metadataURI)",
+  "event FarmerKYCUpdated(address indexed farmer, uint8 status)"
+]
