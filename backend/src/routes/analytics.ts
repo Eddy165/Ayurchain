@@ -37,11 +37,11 @@ router.get("/", authenticate, async (req: AuthRequest, res) => {
 
       case UserRole.LAB:
         const labReports = await LabReport.find({ labId: req.userId });
-        const passedReports = labReports.filter((r) => r.resultStatus === "PASS");
+        const passedReports = labReports.filter((r) => r.status === "passed");
         analytics = {
           totalTests: labReports.length,
           passedTests: passedReports.length,
-          failedTests: labReports.filter((r) => r.resultStatus === "FAIL").length,
+          failedTests: labReports.filter((r) => r.status === "failed").length,
           passRate: labReports.length > 0
             ? (passedReports.length / labReports.length) * 100
             : 0,

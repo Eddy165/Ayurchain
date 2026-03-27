@@ -1,46 +1,56 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { IUser, UserRole, KYCStatus } from "../types";
+import mongoose, { Document, Schema } from "mongoose";
+import bcrypt from "bcryptjs";
+import { IUser } from "../types";
 
-export interface IUserDocument extends IUser, Document {}
+export interface IUserDocument extends Omit<IUser, "_id">, Document {
+  password?: string;
+  aadhaarHash?: string;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}
 
 const UserSchema = new Schema<IUserDocument>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
-    phone: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     role: {
       type: String,
-      enum: Object.values(UserRole),
+      enum: ["farmer", "processor", "lab", "certifier", "brand", "admin", "consumer"],
       required: true,
     },
+    walletAddress: { type: String, required: false },
+    isVerified: { type: Boolean, default: false },
     kycStatus: {
       type: String,
-      enum: Object.values(KYCStatus),
-      default: KYCStatus.PENDING,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
-    walletAddress: { type: String },
-    languages: { type: [String], default: ["en"] },
-    organization: { type: String },
-    location: {
-      address: String,
-      city: String,
-      state: String,
-      country: String,
-      coordinates: {
-        lat: Number,
-        lng: Number,
-      },
-    },
-    passwordHash: { type: String, required: true, select: false },
-    refreshToken: { type: String, select: false },
+    orgName: { type: String },
+    location: { type: String },
+    phone: { type: String },
+    aadhaarHash: { type: String, select: false },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-UserSchema.index({ email: 1 });
-UserSchema.index({ walletAddress: 1 });
-UserSchema.index({ role: 1 });
+UserSchema.pre<IUserDocument>("save", async function (next) {
+  if (!this.isModified("password") || !this.password) return next();
+  try {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+    return next();
+  } catch (err: any) {
+    return next(err);
+  }
+});
+
+UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+  if (!this.password) return false;
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+UserSchema.virtual("fullProfile").get(function () {
+  return `${this.name} (${this.role}) - ${this.orgName || "Indepent"}`;
+});
 
 export const User = mongoose.model<IUserDocument>("User", UserSchema);

@@ -69,7 +69,7 @@ router.post(
           reportFileHash,
           resultStatus || "PENDING"
         );
-        labReport.blockchainTxHash = txHash;
+        labReport.txHash = txHash;
         await labReport.save();
       } catch (blockchainError) {
         console.error("Blockchain error:", blockchainError);
@@ -78,9 +78,9 @@ router.post(
       res.status(201).json({
         id: labReport._id,
         batchId,
-        resultStatus: labReport.resultStatus,
+        resultStatus: labReport.status,
         reportFileHash,
-        blockchainTxHash: labReport.blockchainTxHash,
+        blockchainTxHash: labReport.txHash,
       });
     } catch (error: any) {
       res.status(500).json({ error: error.message });

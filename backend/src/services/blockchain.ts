@@ -6,12 +6,13 @@ import CertificationABI from "../abis/Certification.json";
 import OwnershipTransferABI from "../abis/OwnershipTransfer.json";
 
 class BlockchainService {
-  private provider: ethers.JsonRpcProvider;
-  private signer: ethers.Wallet;
-  private farmerRegistry: ethers.Contract;
-  private batchTracker: ethers.Contract;
-  private certification: ethers.Contract;
-  private ownershipTransfer: ethers.Contract;
+  // Using ! (definite assignment) because these are conditionally assigned from env config
+  private provider!: ethers.JsonRpcProvider;
+  private signer!: ethers.Wallet;
+  private farmerRegistry!: ethers.Contract;
+  private batchTracker!: ethers.Contract;
+  private certification!: ethers.Contract;
+  private ownershipTransfer!: ethers.Contract;
 
   constructor() {
     this.provider = new ethers.JsonRpcProvider(config.polygonRpcUrl);
