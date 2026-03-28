@@ -3,22 +3,13 @@
 @tailwind utilities;
 
 @layer base {
-  html { font-family: 'Inter', system-ui, sans-serif; }
-  body { background-color: #FFF9EC; color: #1E1C12; }
-  * { box-sizing: border-box; }
-  ::selection { background: rgba(121, 89, 0, 0.2); }
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #C1C8C2; border-radius: 999px; }
+  body {
+    @apply bg-surface text-gray-900 antialiased;
+  }
 }
 
-@layer components {
-  .skeleton {
-    background: linear-gradient(90deg,
-      #f4eddd 25%, #e9e2d2 50%, #f4eddd 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
+@layer utilities {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
   }
-  .font-display { font-family: 'Playfair Display', Georgia, serif; }
-  .font-mono    { font-family: 'JetBrains Mono', 'Courier New', monospace; }
 }

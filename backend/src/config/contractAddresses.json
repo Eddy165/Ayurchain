@@ -1,0 +1,9 @@
+{
+  "network": "localhost",
+  "chainId": 31337,
+  "farmerRegistry": "",
+  "batchTracker": "",
+  "ownershipTransfer": "",
+  "certification": "",
+  "deployedAt": ""
+}

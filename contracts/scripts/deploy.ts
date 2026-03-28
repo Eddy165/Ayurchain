@@ -65,11 +65,16 @@ async function main() {
   }
   
   const addressesPath = path.join(backendConfigDir, "contractAddresses.json");
+  const network = await ethers.provider.getNetwork();
+  
   const addresses = {
-    FarmerRegistry: farmerRegistryAddress,
-    BatchTracker: batchTrackerAddress,
-    OwnershipTransfer: ownershipTransferAddress,
-    Certification: certificationAddress
+    network: network.name,
+    chainId: Number(network.chainId),
+    farmerRegistry: farmerRegistryAddress,
+    batchTracker: batchTrackerAddress,
+    ownershipTransfer: ownershipTransferAddress,
+    certification: certificationAddress,
+    deployedAt: new Date().toISOString()
   };
 
   fs.writeFileSync(addressesPath, JSON.stringify(addresses, null, 2));

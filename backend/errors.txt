@@ -1,0 +1,2 @@
+﻿src/server.ts(12,25): error TS2307: Cannot find module './routes/batch' or its corresponding type declarations.
+src/server.ts(13,23): error TS2307: Cannot find module './routes/lab' or its corresponding type declarations.

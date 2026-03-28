@@ -1,17 +1,17 @@
-import { configureStore } from '@reduxjs/toolkit'
-import authReducer from './authSlice'
-import uiReducer from './uiSlice'
-import batchReducer from './batchSlice'
-import walletReducer from './walletSlice'
+import { configureStore } from "@reduxjs/toolkit";
+import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
+import authReducer from "./authSlice";
+import batchReducer from "./batchSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    ui: uiReducer,
     batch: batchReducer,
-    wallet: walletReducer,
   },
-})
+});
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

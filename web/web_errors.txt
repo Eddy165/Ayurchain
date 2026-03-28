@@ -1,0 +1,11 @@
+﻿src/App.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/common/Modal.tsx(50,20): error TS2774: This condition will always return true since this function is always defined. Did you mean to call it instead?
+src/components/ui/index.tsx(9,15): error TS2307: Cannot find module './Avatar' or its corresponding type declarations.
+src/pages/auth/Login.tsx(30,17): error TS2339: Property 'fulfilled' does not exist on type '(payload: LoginPayload) => Promise<PayloadAction<any, string, { arg: LoginPayload; requestId: string; requestStatus: "fulfilled"; }, never> | PayloadAction<...>>'.
+src/pages/auth/Register.tsx(41,24): error TS2339: Property 'fulfilled' does not exist on type '(payload: RegisterPayload) => Promise<PayloadAction<any, string, { arg: RegisterPayload; requestId: string; requestStatus: "fulfilled"; }, never> | PayloadAction<...>>'.
+src/pages/consumer/ScanResult.tsx(7,36): error TS6133: 'trustScoreColor' is declared but its value is never read.
+src/pages/consumer/ScanResult.tsx(125,21): error TS6133: 'isLast' is declared but its value is never read.
+src/pages/ConsumerScan.tsx(4,39): error TS2307: Cannot find module '../components/blockchain' or its corresponding type declarations.
+src/pages/ConsumerScan.tsx(5,82): error TS2307: Cannot find module '../components/consumer/ConsumerComponents' or its corresponding type declarations.
+src/store/authSlice.ts(1,41): error TS6133: 'PayloadAction' is declared but its value is never read.
+src/store/batchSlice.ts(2,22): error TS6133: 'Batch' is declared but its value is never read.

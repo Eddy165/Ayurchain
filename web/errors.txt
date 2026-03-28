@@ -1,0 +1,49 @@
+﻿src/App.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/blockchain/index.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/common/Modal.tsx(50,20): error TS2774: This condition will always return true since this function is always defined. Did you mean to call it instead?
+src/components/consumer/ConsumerComponents.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/layout/AppShell.tsx(9,54): error TS2339: Property 'ui' does not exist on type '{ auth: AuthState; batch: BatchState; }'.
+src/components/layout/Sidebar.tsx(4,36): error TS6133: 'FileCheck' is declared but its value is never read.
+src/components/layout/Sidebar.tsx(4,47): error TS6133: 'FlaskConical' is declared but its value is never read.
+src/components/layout/Sidebar.tsx(4,61): error TS6133: 'Tag' is declared but its value is never read.
+src/components/layout/Sidebar.tsx(4,74): error TS6133: 'UserIcon' is declared but its value is never read.
+src/components/layout/Sidebar.tsx(4,84): error TS6133: 'LogOut' is declared but its value is never read.
+src/components/layout/Sidebar.tsx(4,92): error TS6133: 'Bell' is declared but its value is never read.
+src/components/layout/Sidebar.tsx(10,54): error TS2339: Property 'ui' does not exist on type '{ auth: AuthState; batch: BatchState; }'.
+src/components/layout/Sidebar.tsx(15,12): error TS2678: Type '"Farmer"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin" | undefined'.
+src/components/layout/Sidebar.tsx(20,12): error TS2678: Type '"Processor"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin" | undefined'.
+src/components/layout/Sidebar.tsx(21,12): error TS2678: Type '"LabTester"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin" | undefined'.
+src/components/layout/Sidebar.tsx(22,12): error TS2678: Type '"Certifier"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin" | undefined'.
+src/components/layout/Sidebar.tsx(23,12): error TS2678: Type '"Brand"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin" | undefined'.
+src/components/layout/Sidebar.tsx(25,81): error TS2339: Property 'toLowerCase' does not exist on type 'never'.
+src/components/layout/SplitLayout.tsx(3,1): error TS6133: 'cn' is declared but its value is never read.
+src/components/layout/Topbar.tsx(45,36): error TS2339: Property 'fullName' does not exist on type 'User'.
+src/components/layout/Topbar.tsx(47,64): error TS2339: Property 'fullName' does not exist on type 'User'.
+src/components/ui/Avatar.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/pages/auth/Login.tsx(30,17): error TS2339: Property 'fulfilled' does not exist on type '(payload: LoginPayload) => Promise<PayloadAction<any, string, { arg: LoginPayload; requestId: string; requestStatus: "fulfilled"; }, never> | PayloadAction<...>>'.
+src/pages/auth/Register.tsx(41,24): error TS2339: Property 'fulfilled' does not exist on type '(payload: RegisterPayload) => Promise<PayloadAction<any, string, { arg: RegisterPayload; requestId: string; requestStatus: "fulfilled"; }, never> | PayloadAction<...>>'.
+src/pages/consumer/ScanResult.tsx(7,36): error TS6133: 'trustScoreColor' is declared but its value is never read.
+src/pages/consumer/ScanResult.tsx(125,21): error TS6133: 'isLast' is declared but its value is never read.
+src/pages/dashboard/FarmerDashboard.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/pages/dashboard/FarmerDashboard.tsx(25,9): error TS6133: 'batches' is declared but its value is never read.
+src/pages/dashboard/FarmerDashboard.tsx(41,81): error TS2339: Property 'fullName' does not exist on type 'User'.
+src/pages/dashboard/RoleRouter.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/pages/dashboard/RoleRouter.tsx(11,10): error TS2678: Type '"Farmer"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin"'.
+src/pages/dashboard/RoleRouter.tsx(12,10): error TS2678: Type '"Processor"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin"'.
+src/pages/dashboard/RoleRouter.tsx(13,10): error TS2678: Type '"LabTester"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin"'.
+src/pages/dashboard/RoleRouter.tsx(14,10): error TS2678: Type '"Certifier"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin"'.
+src/pages/dashboard/RoleRouter.tsx(15,10): error TS2678: Type '"Brand"' is not comparable to type '"farmer" | "processor" | "lab" | "certifier" | "brand" | "admin"'.
+src/pages/Landing.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/pages/Landing.tsx(5,22): error TS6133: 'Sprout' is declared but its value is never read.
+src/pages/Landing.tsx(5,30): error TS6133: 'ShieldCheck' is declared but its value is never read.
+src/pages/Landing.tsx(5,43): error TS6133: 'Factory' is declared but its value is never read.
+src/pages/Login.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/pages/Login.tsx(17,18): error TS2339: Property 'isLoading' does not exist on type '{ user: User | null; token: string | null; isAuthenticated: boolean; loading: boolean; error: string | null; login: (payload: LoginPayload) => Promise<PayloadAction<any, string, { ...; }, never> | PayloadAction<...>>; register: (payload: RegisterPayload) => Promise<...>; logout: () => void; getMe: () => Promise<...>...'.
+src/pages/Login.tsx(17,29): error TS2339: Property 'loginWithWallet' does not exist on type '{ user: User | null; token: string | null; isAuthenticated: boolean; loading: boolean; error: string | null; login: (payload: LoginPayload) => Promise<PayloadAction<any, string, { ...; }, never> | PayloadAction<...>>; register: (payload: RegisterPayload) => Promise<...>; logout: () => void; getMe: () => Promise<...>...'.
+src/pages/Register.tsx(27,9): error TS6133: 'navigate' is declared but its value is never read.
+src/pages/Register.tsx(41,31): error TS2554: Expected 1 arguments, but got 2.
+src/router/index.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/router/ProtectedRoute.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/router/ProtectedRoute.tsx(6,28): error TS2339: Property 'isLoading' does not exist on type '{ user: User | null; token: string | null; isAuthenticated: boolean; loading: boolean; error: string | null; login: (payload: LoginPayload) => Promise<PayloadAction<any, string, { ...; }, never> | PayloadAction<...>>; register: (payload: RegisterPayload) => Promise<...>; logout: () => void; getMe: () => Promise<...>...'.
+src/store/authSlice.ts(1,41): error TS6133: 'PayloadAction' is declared but its value is never read.
+src/store/batchSlice.ts(2,22): error TS6133: 'Batch' is declared but its value is never read.

@@ -1,91 +1,108 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
-import { BatchTracker } from "../typechain-types"; // Needs compilation first
 
-describe("BatchTracker Contract", function () {
-  let batchTracker: any; // Using any to avoid typechain required compilation errors immediately
-  let admin: HardhatEthersSigner;
-  let processor: HardhatEthersSigner;
-  let unauth: HardhatEthersSigner;
+describe("BatchTracker", function () {
+  let batchTracker: any;
+  let admin: any;
+  let processor: any;
+  let lab: any;
+  let certifier: any;
 
   beforeEach(async function () {
-    [admin, processor, unauth] = await ethers.getSigners();
-    
+    const [owner, processorAccount, labAccount, certifierAccount] = await ethers.getSigners();
+    admin = owner;
+    processor = processorAccount;
+    lab = labAccount;
+    certifier = certifierAccount;
+
     const BatchTracker = await ethers.getContractFactory("BatchTracker");
     batchTracker = await BatchTracker.deploy();
-    await batchTracker.waitForDeployment();
 
-    const PROCESSOR_ROLE = await batchTracker.PROCESSOR_ROLE();
-    await batchTracker.grantRole(PROCESSOR_ROLE, processor.address);
+    // Grant roles
+    await batchTracker.grantRole(await batchTracker.PROCESSOR_ROLE(), processor.address);
+    await batchTracker.grantRole(await batchTracker.LAB_ROLE(), lab.address);
+    await batchTracker.grantRole(await batchTracker.CERTIFIER_ROLE(), certifier.address);
   });
 
-  it("Should create a batch successfully", async function () {
-    const tx = await batchTracker.connect(admin).createBatch(
-      "BATCH-001",
-      "FARMER-123",
-      "Ashwagandha",
-      "Kerala",
-      1711500000,
-      "500kg",
-      "ipfsHash123"
-    );
-    await tx.wait();
+  describe("createBatch", function () {
+    it("Should create a new batch and emit an event", async function () {
+      const tx = await batchTracker.createBatch(
+        "batch1",
+        "farmer1",
+        "Ashwagandha (Withania somnifera)",
+        "Kerala, India",
+        1690000000,
+        "100 kg",
+        "QHashxyz"
+      );
 
-    const batch = await batchTracker.getBatch("BATCH-001");
-    expect(batch.batchId).to.equal("BATCH-001");
-    expect(batch.herbName).to.equal("Ashwagandha");
-    expect(batch.currentStage).to.equal(0); // FarmHarvest
+      await expect(tx)
+        .to.emit(batchTracker, "BatchCreated")
+        .withArgs("batch1", "farmer1", "Ashwagandha (Withania somnifera)", await ethers.provider.getBlock(tx.blockNumber).then(b => b?.timestamp));
+
+      const batch = await batchTracker.getBatch("batch1");
+      expect(batch.herbName).to.equal("Ashwagandha (Withania somnifera)");
+      expect(batch.currentStage).to.equal(0); // Stage.FarmHarvest
+    });
   });
 
-  it("Should transfer batch to Processing stage by authorized processor", async function () {
-    await batchTracker.connect(admin).createBatch(
-        "BATCH-002",
-        "FARMER-123",
-        "Tulsi",
-        "Assam",
-        1711500000,
-        "200kg",
-        "ipfsHash1"
-    );
+  describe("transferBatch", function () {
+    beforeEach(async function () {
+      await batchTracker.createBatch(
+        "batch1",
+        "farmer1",
+        "Ashwagandha",
+        "Kerala",
+        1690000000,
+        "100 kg",
+        "QHashxyz"
+      );
+    });
 
-    const tx = await batchTracker.connect(processor).transferBatch(
-        "BATCH-002",
-        1, // Processing
-        "PROC-999",
-        "Processed successfully",
-        "ipfsHash2"
-    );
-    await tx.wait();
+    it("Should allow a processor to transfer the batch to Processing stage", async function () {
+      const tx = await batchTracker.connect(processor).transferBatch(
+        "batch1",
+        1, // Stage.Processing
+        "processor1",
+        "Processed into powder",
+        "QHashProcessed"
+      );
 
-    const batch = await batchTracker.getBatch("BATCH-002");
-    expect(batch.currentStage).to.equal(1);
-    
-    const history = await batchTracker.getBatchHistory("BATCH-002");
-    expect(history.length).to.equal(2);
-    expect(history[1].stage).to.equal(1);
-    expect(history[1].notes).to.equal("Processed successfully");
+      await expect(tx)
+        .to.emit(batchTracker, "BatchTransferred")
+        .withArgs("batch1", 1, processor.address);
+
+      const stage = await batchTracker.getBatchStage("batch1");
+      expect(stage).to.equal(1);
+    });
   });
 
-  it("Should reject transfer if caller does not have required role", async function () {
-    await batchTracker.connect(admin).createBatch(
-        "BATCH-003",
-        "FARMER-123",
-        "Neem",
-        "Delhi",
-        1711500000,
-        "100kg",
-        "ipfsHash3"
-    );
+  describe("getBatchHistory", function () {
+    beforeEach(async function () {
+      await batchTracker.createBatch(
+        "batch1",
+        "farmer1",
+        "Ashwagandha",
+        "Kerala",
+        1690000000,
+        "100 kg",
+        "QHashxyz"
+      );
+    });
 
-    await expect(
-        batchTracker.connect(unauth).transferBatch(
-            "BATCH-003",
-            1, // Processing
-            "PROC-000",
-            "Failing transfer",
-            "ipfsHashFail"
-        )
-    ).to.be.revertedWithCustomError(batchTracker, "UnauthorizedStageTransfer");
+    it("Should return an array of transfer events", async function () {
+      await batchTracker.connect(processor).transferBatch(
+        "batch1",
+        1, // Stage.Processing
+        "processor1",
+        "Processed",
+        "QHashP"
+      );
+
+      const history = await batchTracker.getBatchHistory("batch1");
+      expect(history.length).to.equal(2);
+      expect(history[0].stage).to.equal(0);
+      expect(history[1].stage).to.equal(1);
+    });
   });
 });

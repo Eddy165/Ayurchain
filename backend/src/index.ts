@@ -46,11 +46,11 @@ app.use("/api/", globalLimiter);
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/health", (_req, res) => {
-  res.status(200).json({ success: true, status: "ok", timestamp: new Date().toISOString() });
+  res.status(200).json({ status: "AyurChain API running ✅" });
 });
 
 app.get("/api/health", (_req, res) => {
-  res.status(200).json({ success: true, message: "AyurChain API is running", timestamp: new Date().toISOString() });
+  res.status(200).json({ status: "AyurChain API running ✅" });
 });
 
 // ─── API Routes ───────────────────────────────────────────────────────────────

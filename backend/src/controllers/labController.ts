@@ -70,7 +70,7 @@ export async function submitReport(req: AuthRequest, res: Response, next: NextFu
 /**
  * GET /api/labs/queue — get batches pending lab review
  */
-export async function getPendingBatches(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+export async function getPendingQueue(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
   try {
     const batches = await Batch.find({ currentStage: { $in: [1, 2] } })
       .populate("farmerId", "name location orgName")

@@ -1,33 +1,100 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Batch } from '../types/batch.types'
-
-interface BatchState {
-  batches: Batch[]
-  currentBatch: Batch | null
-  isLoading: boolean
-}
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { BatchState } from "../types";
+import { batchAPI } from "../api/axiosInstance";
 
 const initialState: BatchState = {
   batches: [],
   currentBatch: null,
-  isLoading: false,
-}
+  loading: false,
+  error: null,
+};
 
-export const batchSlice = createSlice({
-  name: 'batch',
+export const fetchBatchesThunk = createAsyncThunk(
+  "batch/fetchAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await batchAPI.list();
+      return response;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.error || "Failed to fetch batches");
+    }
+  }
+);
+
+export const fetchBatchHistoryThunk = createAsyncThunk(
+  "batch/fetchHistory",
+  async (batchId: string, { rejectWithValue }) => {
+    try {
+      const response = await batchAPI.getHistory(batchId);
+      return response;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.error || "Failed to fetch batch history");
+    }
+  }
+);
+
+export const createBatchThunk = createAsyncThunk(
+  "batch/create",
+  async (payload: FormData, { rejectWithValue }) => {
+    try {
+      const response = await batchAPI.create(payload);
+      return response;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.error || "Failed to create batch");
+    }
+  }
+);
+
+const batchSlice = createSlice({
+  name: "batch",
   initialState,
-  reducers: {
-    setBatches: (state, action: PayloadAction<Batch[]>) => {
-      state.batches = action.payload
-    },
-    setCurrentBatch: (state, action: PayloadAction<Batch>) => {
-      state.currentBatch = action.payload
-    },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload
-    },
-  },
-})
+  reducers: {},
+  extraReducers: (builder) => {
+    // List
+    builder.addCase(fetchBatchesThunk.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchBatchesThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      state.batches = action.payload;
+    });
+    builder.addCase(fetchBatchesThunk.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
 
-export const { setBatches, setCurrentBatch, setLoading } = batchSlice.actions
-export default batchSlice.reducer
+    // History (fetch specific batch)
+    builder.addCase(fetchBatchHistoryThunk.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+      state.currentBatch = null;
+    });
+    builder.addCase(fetchBatchHistoryThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      state.currentBatch = action.payload;
+    });
+    builder.addCase(fetchBatchHistoryThunk.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
+    // Create
+    builder.addCase(createBatchThunk.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(createBatchThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      state.batches.unshift(action.payload);
+    });
+    builder.addCase(createBatchThunk.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+  },
+});
+
+export const selectBatch = (state: { batch: BatchState }) => state.batch;
+
+export default batchSlice.reducer;

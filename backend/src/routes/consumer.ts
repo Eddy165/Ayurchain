@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { verifyBatch } from "../controllers/consumerController";
+import { verifyByToken } from "../controllers/consumerController";
 
 const router = Router();
 
-// GET /api/consumer/verify/:token — public endpoint, no auth needed
-router.get("/verify/:token", verifyBatch);
+router.get("/verify/:token", verifyByToken);
 
 export default router;
