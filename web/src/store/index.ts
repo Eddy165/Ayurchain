@@ -1,11 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
-import authReducer from './slices/authSlice'
-import batchReducer from './slices/batchSlice'
+import authReducer from './authSlice'
+import uiReducer from './uiSlice'
+import batchReducer from './batchSlice'
+import walletReducer from './walletSlice'
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    batches: batchReducer,
+    ui: uiReducer,
+    batch: batchReducer,
+    wallet: walletReducer,
   },
 })
 

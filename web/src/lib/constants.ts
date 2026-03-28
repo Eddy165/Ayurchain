@@ -1,0 +1,91 @@
+import { Sprout, Factory, FlaskConical, ShieldCheck, Package, User } from 'lucide-react'
+import { StageKey, StageConfig } from '../types/stage.types'
+
+export const HERBS_LIST = [
+  { name: 'Ashwagandha',    scientific: 'Withania somnifera' },
+  { name: 'Tulsi',          scientific: 'Ocimum sanctum' },
+  { name: 'Turmeric',       scientific: 'Curcuma longa' },
+  { name: 'Neem',           scientific: 'Azadirachta indica' },
+  { name: 'Amla',           scientific: 'Phyllanthus emblica' },
+  { name: 'Brahmi',         scientific: 'Bacopa monnieri' },
+  { name: 'Triphala',       scientific: 'Terminalia chebula blend' },
+  { name: 'Shatavari',      scientific: 'Asparagus racemosus' },
+  { name: 'Guggul',         scientific: 'Commiphora wightii' },
+  { name: 'Ginger',         scientific: 'Zingiber officinale' },
+  { name: 'Black Pepper',   scientific: 'Piper nigrum' },
+  { name: 'Cardamom',       scientific: 'Elettaria cardamomum' },
+  { name: 'Cinnamon',       scientific: 'Cinnamomum verum' },
+  { name: 'Moringa',        scientific: 'Moringa oleifera' },
+  { name: 'Giloy',          scientific: 'Tinospora cordifolia' },
+  { name: 'Arjuna',         scientific: 'Terminalia arjuna' },
+  { name: 'Shankhpushpi',   scientific: 'Convolvulus pluricaulis' },
+  { name: 'Mulethi',        scientific: 'Glycyrrhiza glabra' },
+  { name: 'Punarnava',      scientific: 'Boerhavia diffusa' },
+  { name: 'Kutki',          scientific: 'Picrorhiza kurroa' },
+]
+
+export const INDIA_STATES = [
+  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar',
+  'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh',
+  'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra',
+  'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
+  'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
+  'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+]
+
+export const STAGE_CONFIG: Record<StageKey, StageConfig> = {
+  FarmHarvest: {
+    key: 'FarmHarvest',
+    label: 'Farm Harvest',
+    actor: 'Farmer',
+    icon: Sprout,
+    color: '#D97706',
+    bgColor: '#FEF3C7',
+    description: 'Herbs harvested and batch registered on-chain',
+  },
+  Processing: {
+    key: 'Processing',
+    label: 'Processing',
+    actor: 'Processor',
+    icon: Factory,
+    color: '#2563EB',
+    bgColor: '#DBEAFE',
+    description: 'Raw herbs processed and prepared for testing',
+  },
+  LabTesting: {
+    key: 'LabTesting',
+    label: 'Lab Testing',
+    actor: 'Lab Tester',
+    icon: FlaskConical,
+    color: '#7C3AED',
+    bgColor: '#EDE9FE',
+    description: 'Quality and purity certified by accredited lab',
+  },
+  Certified: {
+    key: 'Certified',
+    label: 'AYUSH Certified',
+    actor: 'Certifier',
+    icon: ShieldCheck,
+    color: '#059669',
+    bgColor: '#D1FAE5',
+    description: 'Ministry of AYUSH certification issued on-chain',
+  },
+  RetailReady: {
+    key: 'RetailReady',
+    label: 'Brand Packaged',
+    actor: 'Brand',
+    icon: Package,
+    color: '#0891B2',
+    bgColor: '#CFFAFE',
+    description: 'Product packaged and QR label printed',
+  },
+  Consumer: {
+    key: 'Consumer',
+    label: 'Consumer Ready',
+    actor: 'Consumer',
+    icon: User,
+    color: '#D4A017',
+    bgColor: '#FEF9C3',
+    description: 'Ready for consumer scan and verification',
+  },
+}

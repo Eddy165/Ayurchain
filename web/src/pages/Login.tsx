@@ -1,88 +1,77 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../hooks/redux'
-import { login } from '../store/slices/authSlice'
+import React from 'react'
+import { SplitLayout } from '../components/layout/SplitLayout'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
+import { useAuth } from '../hooks/useAuth'
+import { Link } from 'react-router-dom'
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+})
 
 export default function Login() {
-  const dispatch = useAppDispatch()
-  const { loading, error } = useAppSelector((state) => state.auth)
-  const navigate = useNavigate()
-  const [formData, setFormData] = useState({ email: '', password: '' })
+  const { login, isLoading, loginWithWallet } = useAuth()
+  
+  const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema)
+  })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      await dispatch(login(formData)).unwrap()
-      navigate('/dashboard')
-    } catch (err) {
-      // Error handled by Redux
-    }
-  }
+  // @ts-ignore
+  const onSubmit = (data) => login(data.email, data.password)
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to AyurChain
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-
-          <div className="text-center">
-            <Link to="/register" className="text-sm text-primary-600 hover:text-primary-500">
-              Don't have an account? Register
-            </Link>
-          </div>
-        </form>
+    <SplitLayout quote="From Ancient Roots to Verified Truth" author="AyurChain">
+      <div className="mb-10 text-center">
+        <h1 className="font-display text-h2 text-forest mb-2">Welcome Back</h1>
+        <p className="font-ui text-body text-gray-500">Sign in to the ledger.</p>
       </div>
-    </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <Input 
+          label="Email Address" 
+          placeholder="you@company.com" 
+          {...register('email')} 
+          error={errors.email?.message} 
+        />
+        <Input 
+          label="Password" 
+          type="password" 
+          placeholder="••••••••" 
+          {...register('password')} 
+          error={errors.password?.message} 
+        />
+        
+        <div className="flex justify-end">
+          <Link to="/forgot-password" className="text-caption text-gold hover:underline font-medium">
+            Forgot password?
+          </Link>
+        </div>
+
+        <Button type="submit" fullWidth isLoading={isLoading} className="mt-4">
+          Sign In
+        </Button>
+      </form>
+
+      <div className="my-8 flex items-center gap-4">
+        <div className="h-px bg-surface-container-high flex-1" />
+        <span className="text-caption text-gray-400 font-ui uppercase tracking-wider">or sign in with</span>
+        <div className="h-px bg-surface-container-high flex-1" />
+      </div>
+
+      <Button variant="secondary" fullWidth onClick={loginWithWallet} disabled={isLoading}>
+        🦊 Connect MetaMask
+      </Button>
+
+      <p className="mt-8 text-center text-body text-on-surface font-ui">
+        Don't have an account?{' '}
+        <Link to="/register" className="text-gold font-medium hover:underline">
+          Register →
+        </Link>
+      </p>
+    </SplitLayout>
   )
 }

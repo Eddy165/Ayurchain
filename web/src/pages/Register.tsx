@@ -1,142 +1,89 @@
-import { useState } from 'react'
+import React from 'react'
+import { SplitLayout } from '../components/layout/SplitLayout'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Input } from '../components/ui/Input'
+import { Button } from '../components/ui/Button'
+import { RoleSelector } from '../components/forms/RoleSelector'
+import { useAuth } from '../hooks/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../hooks/redux'
-import { register } from '../store/slices/authSlice'
+import { authService } from '../services/auth.service'
+import { toast } from 'react-hot-toast'
 
-const ROLES = ['FARMER', 'PROCESSOR', 'LAB', 'CERTIFIER', 'BRAND', 'CONSUMER']
+const registerSchema = z.object({
+  fullName: z.string().min(2),
+  email: z.string().email(),
+  password: z.string().min(6),
+  confirmPassword: z.string().min(6),
+  role: z.enum(['Farmer', 'Processor', 'LabTester', 'Certifier', 'Brand']),
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+})
 
 export default function Register() {
-  const dispatch = useAppDispatch()
-  const { loading, error } = useAppSelector((state) => state.auth)
+  const { login } = useAuth()
   const navigate = useNavigate()
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    password: '',
-    role: 'FARMER',
+  const [loading, setLoading] = React.useState(false)
+  
+  const { register, handleSubmit, control, formState: { errors } } = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { role: 'Farmer' }
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // @ts-ignore
+  const onSubmit = async (data) => {
+    setLoading(true)
     try {
-      await dispatch(register(formData)).unwrap()
-      navigate('/dashboard')
-    } catch (err) {
-      // Error handled by Redux
+      await authService.register(data)
+      toast.success("Registration successful!")
+      await login(data.email, data.password)
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Registration failed')
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your AyurChain account
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-            </div>
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                Phone
-              </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              />
-            </div>
-            <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                Role
-              </label>
-              <select
-                id="role"
-                name="role"
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              >
-                {ROLES.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength={8}
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-            >
-              {loading ? 'Creating account...' : 'Register'}
-            </button>
-          </div>
-
-          <div className="text-center">
-            <Link to="/login" className="text-sm text-primary-600 hover:text-primary-500">
-              Already have an account? Sign in
-            </Link>
-          </div>
-        </form>
+    <SplitLayout quote="Create a Legacy of Trust." author="AyurChain">
+      <div className="mb-10 text-center">
+        <h1 className="font-display text-h2 text-forest mb-2">Create Account</h1>
+        <p className="font-ui text-body text-gray-500">Join the verified Ayurveda network.</p>
       </div>
-    </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <Input label="Full Name" placeholder="Your Name" {...register('fullName')} error={errors.fullName?.message} />
+        <Input label="Email Address" placeholder="you@company.com" {...register('email')} error={errors.email?.message} />
+        
+        <div className="grid grid-cols-2 gap-4">
+          <Input label="Password" type="password" placeholder="••••••••" {...register('password')} error={errors.password?.message} />
+          <Input label="Confirm Password" type="password" placeholder="••••••••" {...register('confirmPassword')} error={errors.confirmPassword?.message} />
+        </div>
+
+        <div className="mt-2">
+          <label className="text-body font-ui text-on-surface mb-3 block">Select Your Role</label>
+          <Controller
+            name="role"
+            control={control}
+            render={({ field }) => (
+              <RoleSelector value={field.value as any} onChange={field.onChange} />
+            )}
+          />
+        </div>
+
+        <Button type="submit" fullWidth isLoading={loading} className="mt-6">
+          Create Account
+        </Button>
+      </form>
+
+      <p className="mt-8 text-center text-body text-on-surface font-ui">
+        Already have an account?{' '}
+        <Link to="/login" className="text-gold font-medium hover:underline">
+          Login →
+        </Link>
+      </p>
+    </SplitLayout>
   )
 }
